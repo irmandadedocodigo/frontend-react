@@ -1,0 +1,14 @@
+
+.Card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 700px;
+}
+
+@media (max-width: 768px) {
+    .Card {
+        min-width: 100%;
+        height: 100%;
+    }
+}
