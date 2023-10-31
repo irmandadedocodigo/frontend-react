@@ -48,6 +48,13 @@ export default function Login() {
                 });
             }
 
+            if (error.response.data.message.includes('password is not strong enough')) {
+                setError('password', {
+                    type: 'manual',
+                    message: 'Senha inválida - A senha deve conter no mínimo 8 caracteres, 1 letra maiúscula, 1 letra minúscula , 1 número e 1 caractere especial'
+                });
+            }
+
             console.error(error.response.data.message);
         }
     }
@@ -86,8 +93,8 @@ export default function Login() {
                         </div>
                     </form>
                     <div className="flex justify-between">
-                        <a href="/auth/register">Ainda não tenho uma conta</a>
-                        <a href="">Esqueci minha senha</a>
+                        <a href="/auth/register" className="text-sm transition hover:text-[--tertiary]">Ainda não tenho uma conta</a>
+                        <a href="" className="text-sm transition hover:text-[--tertiary]">Esqueci minha senha</a>
                     </div>
                 </div>
             </div>

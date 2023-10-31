@@ -5,7 +5,7 @@ import { AxiosResponse } from "axios";
 
 class AuthEndPoints {
     static async Login(data: LoginDTO) {
-        const reponse: AxiosResponse<LoginDTO> = await API_BASE_URL.post('/auth/login', data);
+        const reponse: AxiosResponse = await API_BASE_URL.post('/auth/login', data);
         return reponse.data;
     }
 }
