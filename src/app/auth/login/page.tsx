@@ -4,14 +4,8 @@ import { useForm } from "react-hook-form";
 import styles from "../auth.module.css";
 import AuthEndPoints from "../endpoints";
 import { useRouter } from "next/navigation";
-
-interface CatchError {
-    response: {
-        data: {
-            message: 'Not Found' | 'Unauthorized'
-        }
-    }
-}
+import Link from "next/link";
+import Validator from "@/app/validators";
 
 export default function Login() {
     const form = useForm<LoginDTO>({
@@ -30,32 +24,23 @@ export default function Login() {
     } = form
 
     const submit = async (data: LoginDTO) => {
+        const validade = Validator.validatePassword(data.password)
+        if (validade) {
+            setError('password', {
+                type: 'manual',
+                message: validade
+            })
+            return;
+        }
         try {
             await AuthEndPoints.Login(data);
             router.push("/home");
-        } catch (error: CatchError | any) {
-            if (error.response.data.message === 'Not Found') {
-                setError('email', {
-                    type: 'manual',
-                    message: 'E-mail não cadastrado'
-                });
-            }
-
-            if (error.response.data.message === 'Unauthorized') {
-                setError('password', {
-                    type: 'manual',
-                    message: 'Senha incorreta'
-                });
-            }
-
-            if (error.response.data.message.includes('password is not strong enough')) {
-                setError('password', {
-                    type: 'manual',
-                    message: 'Senha inválida - A senha deve conter no mínimo 8 caracteres, 1 letra maiúscula, 1 letra minúscula , 1 número e 1 caractere especial'
-                });
-            }
-
-            console.error(error.response.data.message);
+        } catch (error) {
+            setError('root', {
+                type: 'manual',
+                message: 'Usuário ou senha incorretos'
+            });
+            console.error(error);
         }
     }
 
@@ -72,6 +57,10 @@ export default function Login() {
                                 className="rounded border border-gray-400 p-2 text-black"
                                 {...register("email", {
                                     required: 'Campo obrigatório',
+                                    pattern: {
+                                        value: /\S+@\S+\.\S+/,
+                                        message: 'E-mail inválido'
+                                    }
                                 })}
                             />
                             <p className="text-red-400">{errors.email?.message}</p>
@@ -90,11 +79,12 @@ export default function Login() {
                             >
                                 Entrar
                             </button>
+                            <p className="text-red-400 text-center">{errors.root?.message}</p>
                         </div>
                     </form>
                     <div className="flex justify-between">
-                        <a href="/auth/register" className="text-sm transition hover:text-[--tertiary]">Ainda não tenho uma conta</a>
-                        <a href="" className="text-sm transition hover:text-[--tertiary]">Esqueci minha senha</a>
+                        <Link href="/auth/register" className="text-sm transition hover:text-[--tertiary]">Ainda não tenho uma conta</Link>
+                        <Link href="" className="text-sm transition hover:text-[--tertiary]">Esqueci minha senha</Link>
                     </div>
                 </div>
             </div>
