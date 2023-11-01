@@ -6,6 +6,7 @@ import AuthEndPoints from "../endpoints";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Validator from "@/app/validators";
+import Cookies from "@/app/utils/cookie";
 
 export default function Login() {
     const form = useForm<LoginDTO>({
@@ -33,8 +34,16 @@ export default function Login() {
             return;
         }
         try {
-            await AuthEndPoints.Login(data);
-            router.push("/home");
+            const response = await AuthEndPoints.Login(data);
+            await Cookies.set('token', response.token, {
+                httpOnly: true,
+                expires: new Date().getTime() + 60 * 60 * 24 * 7,
+                path: '/',
+                secure: true,
+                sameSite: 'strict'
+            });
+
+            router.push("/feed");
         } catch (error) {
             setError('root', {
                 type: 'manual',
