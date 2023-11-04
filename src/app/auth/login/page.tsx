@@ -34,14 +34,14 @@ export default function Login() {
             return;
         }
         try {
-            const response = await AuthEndPoints.Login(data);
+            const response = await AuthEndPoints.postLogin(data);
             Cookies.set('token', response.token, {
                 expires: 1,
                 secure: true,
                 path: '/',
                 sameSite: 'strict'
             });
-            router.push("/feed");
+            router.push("/");
         } catch (error) {
             setError('root', {
                 type: 'manual',

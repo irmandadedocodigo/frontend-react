@@ -2,18 +2,27 @@ import api from "@/app/utils/api";
 import LoginDTO from "../dtos/LoginDTO";
 import { AxiosResponse } from "axios";
 import CreateUserDto from "../dtos/CreateUserDTO";
+import { IProfile } from "../interfaces/ProfileInterface";
 
 
 class AuthEndPoints {
-    static async Login(data: LoginDTO) {
-        const reponse: AxiosResponse<{ token: string }> = await api.post('/auth/login', data);
+    constructor(
+        private readonly prefix: string = '/auth'
+    ) { }
+    async postLogin(data: LoginDTO) {
+        const reponse: AxiosResponse<{ token: string }> = await api.post(`${this.prefix}/login`, data);
         return reponse.data;
     }
 
-    static async Register(data: CreateUserDto) {
-        const reponse: AxiosResponse = await api.post('/auth/register', data);
+    async postRegister(data: CreateUserDto) {
+        const reponse: AxiosResponse = await api.post(`${this.prefix}/register`, data);
+        return reponse.data;
+    }
+
+    async getProfile() {
+        const reponse: AxiosResponse<IProfile> = await api.get(`${this.prefix}/profile`);
         return reponse.data;
     }
 }
 
-export default AuthEndPoints;
+export default new AuthEndPoints();

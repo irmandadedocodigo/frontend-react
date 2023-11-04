@@ -39,7 +39,7 @@ export default function Register() {
         }
 
         try {
-            await AuthEndPoints.Register(data);
+            await AuthEndPoints.postRegister(data);
             router.push("/auth/login");
         } catch (error) {
             console.error(error);
