@@ -15,9 +15,16 @@ import Link from 'next/link'
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+const passwordSchema = z.string()
+  .min(6, { message: "A senha deve ter no mínimo 6 caracteres" })
+  .regex(/[A-Z]/, { message: "A senha deve conter pelo menos uma letra maiúscula" })
+  .regex(/[a-z]/, { message: "A senha deve conter pelo menos uma letra minúscula" })
+  .regex(/\d/, { message: "A senha deve conter pelo menos um número" })
+  .regex(/[\W_]/, { message: "A senha deve conter pelo menos um caractere especial" });
+
 const formSchema = z.object({
   email: z.string().email({ message: "Email inválido" }),
-  password: z.string().min(6, { message: "Senha inválida" }),
+  password: passwordSchema
 })
 
 export default function LoginPage() {
@@ -35,7 +42,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen ">
-      <Card className="w-full max-w-lg">
+      <Card className="w-full md:max-w-lg border-0 md:border">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Entrar na conta</CardTitle>
           <CardDescription>
